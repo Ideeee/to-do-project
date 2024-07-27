@@ -1,10 +1,13 @@
-const Tasks = require('../model/ToDo');
+const { models } = require('../model/index.js');
+
+const Task = models.Task
 
 exports.createTask = async(req, res) =>{
     const task = await req.body;
+    console.log(task)
     try {
-        const newTask = await Tasks.create(task);
-        if(!newTask) return res.status(400).send("An error occured");
+        const newTask = await Task.create(task);
+        if(!newTask) return res.status(400).send("An error occured while creating the task");
         res.status(201).json(
             {
                 message: "Created Successfully!",
@@ -16,12 +19,15 @@ exports.createTask = async(req, res) =>{
     }
 }
 
-exports.getTasks = async(req, res) =>{
+module.exports.getTasks = async(req, res) =>{
             
     try{
-        const tasks = await Tasks.find();
+        const tasks = await Task.findAll();
         if(!tasks) return res.status(404).send("Not found");
-        res.status(200).json({"All Tasks" : tasks });
+        const jsonData = {
+            "Tasks" : tasks 
+        };
+        res.status(200).render('index', { jsonData });
     }
     catch(e){
         res.status(500).send(e.message);
@@ -31,10 +37,12 @@ exports.getTasks = async(req, res) =>{
 
 exports.getOneTask = async(req, res) =>{
     const{id} = req.params;
+    
     try {
-        const task = await Tasks.findById(id);
+        const task = await Task.findById(id);
         if(!task) return res.status(404).send("Not found");
         res.status(200).json({"Task" : task });
+
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -45,7 +53,7 @@ exports.updateTask = async(req, res) =>{
     const task = req.body;
 
     try {
-        const updatedTask = await Tasks.findOneAndUpdate(id, task, {new: true});
+        const updatedTask = await Task.findOneAndUpdate(id, task, {new: true});
         if(!updatedTask) return res.status(400).send("An error occured");
         res.status(200).json(
             {

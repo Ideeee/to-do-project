@@ -1,13 +1,23 @@
+const {createServer} = require('http');
+
 const express = require('express');
-const {json} = require('express');
-const connect = require('./config/database');
+const { json } = require('express');
+const path = require('path');
+
 const router = require('./routes/todo.routes');
-require('dotenv').config({path: '.env'});
+const { sequelize } = require("./model/index.js")
+
+
+require('dotenv').config({path: '.env'}); //CONFIGURE ENV FILE
+
+
 const app = express();
-connect(); //your hosted mongo URI
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({extended:true})); 
 
 app.get("/", (req,res) => {
     res.send("Welcome to my TO-DO app");
@@ -15,6 +25,20 @@ app.get("/", (req,res) => {
 
 app.use("/tasks", router);
 
+port = process.env.PORT || 3000;
+const server = createServer(app);
 
-port = process.env.PORT || 2000;
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+const serve = async () => {
+    try {
+        // force=true flushes your database everytime your server restarts. It's used to
+        // force-update your tables based on your models.
+        await sequelize.sync({ force: true, logging: false });
+        // await sequelize.sync({ logging: false });
+        server.listen(port, () => console.log(`Server is running on port ${port}`));
+    } catch (err) {
+        // throw new Error("Could not start-up server\n" + `Reason: ${err.message}`)
+        throw err
+    }
+}
+
+serve();

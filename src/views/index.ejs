@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON Response Example</title>
+</head>
+<body>
+  <h1>All Tasks</h1>
+  <!-- <p><%= JSON.stringify(jsonData.Tasks) %></p> -->
+  <!-- <p>Data: <%= JSON.stringify(jsonData.data) %></p> -->
+
+  <% jsonData.Tasks.forEach(function(task, index) { %>
+  
+        Item <%= index + 1 %>:
+        <ul>
+          <li>Name: <%= task.name %></li>
+          <li>Description: <%= task.description %></li>
+          <li>Done: <%= task.completed %></li>
+        </ul>
+     
+  <% }); %>
+ 
+  <form id="myForm" action="/" method="POST">
+
+    <div class="col-md-6">
+      <input type="text" id="taskname" name="name" required placeholder="Task name" /> 
+    </div>
+
+    <br/>
+
+    <div class="col-md-6">
+      <input type="text" id="desc" name="description" required placeholder="Description"/>
+    </div>
+    
+
+    <button type="submit">Add Task</button>
+
+  </form>
+
+  <script>
+    let formData = {};
+
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+      
+      event.preventDefault();
+
+      // const formData = new FormData(this);
+      const formData = {};
+
+      const Name = document.getElementById('taskname').value;
+      const Description = document.getElementById('desc').value;
+
+      formData.name = Name;
+      formData.description = Description;
+
+      fetch('/tasks', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response data
+          console.log(data);
+        })
+        .catch(error => {
+          // Handle any errors
+          console.error(error);
+        });
+    });
+
+    // function handleClick() {
+    //   fetch('/my-route')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       // Handle the response data
+    //       console.log(data);
+    //     })
+    //     .catch(error => {
+    //       // Handle any errors
+    //       console.error(error);
+    //     });
+    // }
+  </script>
+
+</body>
+</html>

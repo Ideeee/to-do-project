@@ -18,6 +18,9 @@ const initTask = (sequelize, DataTypes) => {
                     len: [0, 100],
                 },
             },
+            dueDate: {
+                type: DataTypes.DATE,
+            },
             completed: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,

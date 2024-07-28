@@ -3,7 +3,7 @@ const { models } = require('../model/index.js');
 const Task = models.Task
 
 exports.createTask = async(req, res) =>{
-    const task = await req.body;
+    const task = req.body;
     console.log(task)
     try {
         const newTask = await Task.create(task);

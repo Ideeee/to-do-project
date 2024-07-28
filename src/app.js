@@ -20,7 +20,11 @@ app.use(json());
 app.use(express.urlencoded({extended:true})); 
 
 app.get("/", (req,res) => {
-    res.send("Welcome to my TO-DO app");
+    res.redirect('/tasks');
+})
+
+app.get("/create", (req,res) => {
+    res.render('create');
 })
 
 app.use("/tasks", router);
@@ -30,10 +34,10 @@ const server = createServer(app);
 
 const serve = async () => {
     try {
-        // force=true flushes your database everytime your server restarts. It's used to
+        // force=true clears your database everytime your server restarts. It's used to
         // force-update your tables based on your models.
-        await sequelize.sync({ force: true, logging: false });
-        // await sequelize.sync({ logging: false });
+        // await sequelize.sync({ force: true, logging: false });
+        await sequelize.sync({ logging: false });
         server.listen(port, () => console.log(`Server is running on port ${port}`));
     } catch (err) {
         // throw new Error("Could not start-up server\n" + `Reason: ${err.message}`)

@@ -18,8 +18,8 @@
         background-color: rgb(234, 215, 249);
         width: 50%;
         max-width: 500px;
-        height: 45%;
-        max-height: 500px;
+        height: 50%;
+        min-height: 350px;
         padding-left: 30px;
         padding-top: 20px;
         border-radius: 10px;
@@ -98,10 +98,12 @@
 
       const Name = document.getElementById('taskname').value;
       const Description = document.getElementById('desc').value;
+      const dueDate = document.getElementById('dueDate').value;
 
 
       formData.name = Name;
       formData.description = Description;
+      formData.dueDate = dueDate;
 
 
       fetch('/tasks', {

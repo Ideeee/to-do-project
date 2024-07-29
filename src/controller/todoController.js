@@ -49,12 +49,17 @@ exports.getOneTask = async(req, res) =>{
 }
 
 exports.updateTask = async(req, res) =>{
-    const id = {_id: req.params.id};
+    const id = req.params.id;
     const task = req.body;
+    console.log("got here");
+    console.log(id);
 
     try {
-        const updatedTask = await Task.findOneAndUpdate(id, task, {new: true});
+        let updatedTask = await Task.findOne( {where: { id: id }});
+        console.log(updatedTask);
         if(!updatedTask) return res.status(400).send("An error occured");
+        updatedTask.completed = task.completed;
+        updatedTask.save();
         res.status(200).json(
             {
                 message: "Updated Successfully!",
@@ -62,6 +67,7 @@ exports.updateTask = async(req, res) =>{
             }
         );
     } catch (error) {
+        console.log(error);
         res.status(500).send(error.message);
     }
 }
